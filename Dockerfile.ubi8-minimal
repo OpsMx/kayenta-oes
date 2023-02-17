@@ -1,0 +1,23 @@
+FROM alpine:3 AS build
+RUN apk add --update \
+    openjdk11 \
+    && rm -rf /var/cache/apk
+LABEL maintainer="sig-platform@spinnaker.io"
+ENV GRADLE_USER_HOME /workspace/.gradle
+ENV GRADLE_OPTS -Xmx4g
+WORKDIR /build
+COPY . /build
+RUN ./gradlew --no-daemon kayenta-web:installDist -x test
+
+
+FROM quay.io/opsmxpublic/image-base-java-ubi8-minimal:latest AS package
+LABEL maintainer="info@opsmx.io"
+
+RUN  microdnf install --setopt=tsflags=nodocs  openssh-clients  && \
+  groupadd -g 10111 spinnaker && \
+  useradd -g spinnaker -u 10111 spinnaker && \
+  mkdir -p /opt/kayenta/plugins && chown -R spinnaker:spinnaker /opt/kayenta/plugins
+
+COPY --from=build /build/kayenta-web/build/install/kayenta /opt/kayenta
+USER spinnaker
+CMD ["/opt/kayenta/bin/kayenta"]
