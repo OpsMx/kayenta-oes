@@ -20,6 +20,7 @@ import com.google.common.collect.ImmutableList;
 import com.netflix.kayenta.filters.KayentaCorsFilter;
 import com.netflix.spectator.api.Registry;
 import com.netflix.spinnaker.kork.web.interceptors.MetricsInterceptor;
+import jakarta.servlet.Filter;
 import java.util.Collections;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
@@ -59,7 +60,7 @@ public class WebConfiguration implements WebMvcConfigurer {
 
   @Bean
   FilterRegistrationBean simpleCORSFilter() {
-    FilterRegistrationBean frb = new FilterRegistrationBean(new KayentaCorsFilter());
+    FilterRegistrationBean frb = new FilterRegistrationBean((Filter) new KayentaCorsFilter());
     frb.setOrder(Ordered.HIGHEST_PRECEDENCE);
     return frb;
   }

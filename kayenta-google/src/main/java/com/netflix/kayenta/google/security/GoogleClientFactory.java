@@ -21,7 +21,7 @@ import com.google.api.client.http.HttpRequest;
 import com.google.api.client.http.HttpRequestInitializer;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.monitoring.v3.Monitoring;
 import com.google.api.services.monitoring.v3.MonitoringScopes;
 import com.google.api.services.storage.Storage;
@@ -51,7 +51,7 @@ public class GoogleClientFactory {
 
   public Monitoring getMonitoring() throws IOException {
     HttpTransport httpTransport = buildHttpTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+    JsonFactory jsonFactory = GsonFactory.getDefaultInstance();
     GoogleCredentials credentials = getCredentials(MonitoringScopes.all());
     HttpRequestInitializer reqInit = setHttpTimeout(credentials);
     String applicationName = "Spinnaker/" + applicationVersion;
@@ -63,7 +63,7 @@ public class GoogleClientFactory {
 
   public Storage getStorage() throws IOException {
     HttpTransport httpTransport = buildHttpTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+    JsonFactory jsonFactory = GsonFactory.getDefaultInstance();
     GoogleCredentials credentials = getCredentials(StorageScopes.all());
     HttpRequestInitializer reqInit = setHttpTimeout(credentials);
     String applicationName = "Spinnaker/" + applicationVersion;

@@ -22,6 +22,11 @@ plugins {
 
 allprojects {
   apply plugin: "io.spinnaker.project"
+  apply plugin: 'io.spinnaker.project'
+  repositories {
+    mavenLocal()
+    mavenCentral()
+  }
 }
 
 subprojects { project ->
@@ -56,7 +61,7 @@ subprojects { project ->
 
     tasks.withType(JavaCompile).configureEach {
       javaCompiler = javaToolchains.compilerFor {
-        languageVersion = JavaLanguageVersion.of(11)
+        languageVersion = JavaLanguageVersion.of(17)
       }
     }
     tasks.withType(Test).configureEach {
@@ -105,17 +110,19 @@ subprojects { project ->
       api "io.spinnaker.kork:kork-swagger"
       api "io.spinnaker.orca:orca-core"
 
-      api "com.squareup.retrofit:retrofit"
-      api "com.squareup.retrofit:converter-jackson"
-      api "com.squareup.okhttp:okhttp"
-      api "com.squareup.okhttp:okhttp-urlconnection"
-      api "com.squareup.okhttp:okhttp-apache"
+      api "com.squareup.retrofit:retrofit:1.9.0"
+      api "com.squareup.retrofit:converter-jackson:1.9.0"
+      api "com.squareup.okhttp:okhttp:2.7.5"
+      api "com.squareup.okhttp:okhttp-urlconnection:2.7.5"
+      api "com.squareup.okhttp:okhttp-apache:2.7.5"
+
 
       testImplementation "org.springframework.boot:spring-boot-starter-test"
       testImplementation "org.spockframework:spock-core"
       testImplementation "org.spockframework:spock-spring"
       testImplementation "org.springframework:spring-test"
       testImplementation "org.hamcrest:hamcrest-core"
+      testImplementation "org.apache.groovy:groovy-all"
       testRuntimeOnly "cglib:cglib-nodep"
       testRuntimeOnly "org.objenesis:objenesis"
       testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine"

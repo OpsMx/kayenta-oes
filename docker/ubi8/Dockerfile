@@ -1,7 +1,7 @@
-FROM quay.io/opsmxpublic/ubi8-jre-11:v1
+FROM quay.io/opsmxpublic/ubifips:8.7
 MAINTAINER sig-platform@spinnaker.io
 COPY kayenta-web/build/install/kayenta /opt/kayenta
-RUN yum -y install java-11-openjdk-headless.x86_64 wget vim  net-tools curl nettle
+RUN yum -y install java-17-openjdk-devel wget vim  net-tools curl nettle
 RUN yum -y update
 RUN adduser spinnaker
 RUN mkdir -p /opt/kayenta/plugins

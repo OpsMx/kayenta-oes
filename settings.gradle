@@ -13,6 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+if (spinnakerGradleVersion.endsWith('-SNAPSHOT')) {
+  pluginManagement {
+    repositories {
+      mavenLocal()
+      gradlePluginPortal()
+    }
+  }
+}
+enableFeaturePreview("VERSION_ORDERING_V2")
 
 rootProject.name="kayenta"
 
