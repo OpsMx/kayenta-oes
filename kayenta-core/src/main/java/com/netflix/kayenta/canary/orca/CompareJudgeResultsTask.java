@@ -52,7 +52,7 @@ public class CompareJudgeResultsTask implements RetryableTask {
       StorageServiceRepository storageServiceRepository,
       List<CanaryJudge> canaryJudges,
       ObjectMapper kayentaObjectMapper,
-      @Lazy ExecutionMapper executionMapper) {
+      ExecutionMapper executionMapper) {
     this.accountCredentialsRepository = accountCredentialsRepository;
     this.storageServiceRepository = storageServiceRepository;
     this.canaryJudges = canaryJudges;

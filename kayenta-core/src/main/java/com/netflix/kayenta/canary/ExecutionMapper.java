@@ -45,6 +45,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
@@ -71,7 +72,7 @@ public class ExecutionMapper {
       Registry registry,
       String currentInstanceId,
       Optional<List<CanaryScopeFactory>> canaryScopeFactories,
-      ExecutionLauncher executionLauncher,
+      @Lazy ExecutionLauncher executionLauncher,
       ExecutionRepository executionRepository,
       @Value("${kayenta.include-spring-security-authentication-in-pipeline-context:false}")
           boolean includeAuthentication) {
