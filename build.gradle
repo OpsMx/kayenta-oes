@@ -43,7 +43,7 @@ subprojects { project ->
         mavenLocal()
         maven{
           url "https://nexus.opsmx.net/repository/maven-snapshots/"
-        } 
+        }
       }
     }
 
@@ -94,7 +94,7 @@ subprojects { project ->
       testAnnotationProcessor "org.projectlombok:lombok"
       testCompileOnly "org.projectlombok:lombok"
 
-
+      implementation "com.squareup.okio:okio-jvm:3.2.0"
       api "org.slf4j:slf4j-api"
       api "org.springframework.boot:spring-boot-starter-web"
       api "io.spinnaker.kork:kork-swagger"
