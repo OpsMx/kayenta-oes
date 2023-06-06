@@ -43,7 +43,7 @@ subprojects { project ->
         mavenLocal()
         maven{
           url "https://nexus.opsmx.net/repository/maven-snapshots/"
-        } 
+        }
       }
     }
 
@@ -118,6 +118,7 @@ subprojects { project ->
       api "com.squareup.okhttp:okhttp:2.7.5"
       api "com.squareup.okhttp:okhttp-urlconnection:2.7.5"
       api "com.squareup.okhttp:okhttp-apache:2.7.5"
+      api "org.jsoup:jsoup:1.15.3" //CVE-2022-36033:jinjava-2.6.0 > jsoup-1.14.2
 
 
       testImplementation "org.springframework.boot:spring-boot-starter-test"
