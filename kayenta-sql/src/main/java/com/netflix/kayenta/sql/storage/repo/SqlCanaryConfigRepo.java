@@ -17,6 +17,9 @@
 package com.netflix.kayenta.sql.storage.repo;
 
 import com.netflix.kayenta.sql.storage.model.SqlCanaryConfig;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
-public interface SqlCanaryConfigRepo extends PagingAndSortingRepository<SqlCanaryConfig, String> {}
+public interface SqlCanaryConfigRepo
+    extends PagingAndSortingRepository<SqlCanaryConfig, String>,
+        CrudRepository<SqlCanaryConfig, String> {}
