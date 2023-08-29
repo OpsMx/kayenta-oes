@@ -1,7 +1,5 @@
 package com.netflix.kayenta.atlas.config;
 
-import static org.junit.Assert.*;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.netflix.kayenta.atlas.model.AtlasResults;
 import com.netflix.kayenta.metrics.FatalQueryException;
@@ -9,7 +7,8 @@ import com.netflix.kayenta.metrics.RetryableQueryException;
 import java.io.BufferedReader;
 import java.io.StringReader;
 import java.util.List;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class AtlasSSEConverterTest {
 
@@ -30,27 +29,39 @@ public class AtlasSSEConverterTest {
   @Test
   public void loneClose() {
     List<AtlasResults> results = atlasResultsFromSSE(closeMessage);
-    assertEquals(1, results.size());
+    Assertions.assertEquals(1, results.size());
   }
 
   @Test
   public void dataPlusClose() {
     List<AtlasResults> results = atlasResultsFromSSE(timeseriesMessage + closeMessage);
-    assertEquals(2, results.size());
+    Assertions.assertEquals(2, results.size());
   }
 
-  @Test(expected = RetryableQueryException.class)
+  @Test
   public void missingCloseThrows() {
-    atlasResultsFromSSE(timeseriesMessage);
+    Assertions.assertThrows(
+        RetryableQueryException.class,
+        () -> {
+          atlasResultsFromSSE(timeseriesMessage);
+        });
   }
 
-  @Test(expected = FatalQueryException.class)
+  @Test
   public void fatalErrorWithoutClose() {
-    atlasResultsFromSSE(errorMessageIllegalStateMessage);
+    Assertions.assertThrows(
+        FatalQueryException.class,
+        () -> {
+          atlasResultsFromSSE(errorMessageIllegalStateMessage);
+        });
   }
 
-  @Test(expected = RetryableQueryException.class)
+  @Test
   public void retryableErrorWithoutClose() {
-    atlasResultsFromSSE(retryableErrorMessage);
+    Assertions.assertThrows(
+        RetryableQueryException.class,
+        () -> {
+          atlasResultsFromSSE(retryableErrorMessage);
+        });
   }
 }

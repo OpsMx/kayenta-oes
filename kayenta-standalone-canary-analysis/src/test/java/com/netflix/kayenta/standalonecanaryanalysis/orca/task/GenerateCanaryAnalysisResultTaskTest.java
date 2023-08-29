@@ -32,8 +32,8 @@ import com.tngtech.java.junit.dataprovider.DataProvider;
 import com.tngtech.java.junit.dataprovider.DataProviderRunner;
 import com.tngtech.java.junit.dataprovider.UseDataProvider;
 import java.util.List;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(DataProviderRunner.class)
@@ -53,7 +53,7 @@ public class GenerateCanaryAnalysisResultTaskTest {
     };
   }
 
-  @Before
+  @BeforeEach
   public void before() {
     task = new GenerateCanaryAnalysisResultTask(new ObjectMapper());
   }

@@ -3,3 +3,6 @@ dependencies {
 
   testImplementation 'org.mock-server:mockserver-junit-rule:5.11.1'
 }
+test {
+  useJUnitPlatform()
+}

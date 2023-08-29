@@ -18,6 +18,7 @@ package com.netflix.kayenta.influxdb.service;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertThrows;
 
 import com.netflix.kayenta.canary.providers.metrics.InfluxdbCanaryMetricSetQueryConfig;
 import com.netflix.kayenta.influxdb.canary.InfluxDbCanaryScope;
@@ -25,7 +26,7 @@ import com.netflix.kayenta.influxdb.metrics.InfluxDbQueryBuilder;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class InfluxdbQueryBuilderTest {
 
@@ -58,14 +59,15 @@ public class InfluxdbQueryBuilderTest {
     return fields;
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testBuild_withInvalidScope() {
     String measurement = "temperature";
 
     InfluxDbCanaryScope canaryScope = createScope();
     canaryScope.setScope("server='myapp-prod-v002'");
     InfluxdbCanaryMetricSetQueryConfig queryConfig = queryConfig(measurement, fieldsList(), null);
-    queryBuilder.build(queryConfig, canaryScope);
+    assertThrows(
+        IllegalArgumentException.class, () -> queryBuilder.build(queryConfig, canaryScope));
   }
 
   @Test
@@ -107,7 +109,7 @@ public class InfluxdbQueryBuilderTest {
             "SELECT *::field FROM temperature WHERE time >= '2010-01-01T12:00:00Z' AND time < '2010-01-01T12:01:40Z' AND server = 'myapp-prod-v002'"));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testBuild_customInlineTemplateWithMissingRequiredVariables() {
     // missing required variables are: {scope} and {timeFilter}
     String inLineQuery = "SELECT count FROM measurement";
@@ -115,7 +117,8 @@ public class InfluxdbQueryBuilderTest {
     InfluxDbCanaryScope canaryScope = createScope();
     canaryScope.setScope("server:myapp-prod-v002");
     InfluxdbCanaryMetricSetQueryConfig queryConfig = queryConfig(null, null, inLineQuery);
-    queryBuilder.build(queryConfig, canaryScope);
+    assertThrows(
+        IllegalArgumentException.class, () -> queryBuilder.build(queryConfig, canaryScope));
   }
 
   @Test
@@ -133,7 +136,7 @@ public class InfluxdbQueryBuilderTest {
             "SELECT count FROM measurement WHERE label1 = 'value1' AND time >= '2010-01-01T12:00:00Z' AND time < '2010-01-01T12:01:40Z' AND server = 'myapp-prod-v002'"));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testBuild_customInlineTemplateWithInvalidAdditionalQuery() {
     String inLineQuery =
         "SELECT sum(count) FROM web_requests WHERE $\\{scope} AND $\\{timeFilter} GROUP BY time(1m); DROP DATABASE metrics";
@@ -141,10 +144,11 @@ public class InfluxdbQueryBuilderTest {
     InfluxDbCanaryScope canaryScope = createScope();
     canaryScope.setScope("server:myapp-prod-v002");
     InfluxdbCanaryMetricSetQueryConfig queryConfig = queryConfig(null, null, inLineQuery);
-    queryBuilder.build(queryConfig, canaryScope);
+    assertThrows(
+        IllegalArgumentException.class, () -> queryBuilder.build(queryConfig, canaryScope));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testBuild_customInlineTemplateWithInvalidQueryType() {
     String inLineQuery =
         "SELECT sum(count) FROM web_requests WHERE $\\{scope} AND $\\{timeFilter} GROUP BY time(1m); SHOW SERIES";
@@ -152,10 +156,11 @@ public class InfluxdbQueryBuilderTest {
     InfluxDbCanaryScope canaryScope = createScope();
     canaryScope.setScope("server:myapp-prod-v002");
     InfluxdbCanaryMetricSetQueryConfig queryConfig = queryConfig(null, null, inLineQuery);
-    queryBuilder.build(queryConfig, canaryScope);
+    assertThrows(
+        IllegalArgumentException.class, () -> queryBuilder.build(queryConfig, canaryScope));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testBuild_customInlineTemplateWithInvalidLineComments() {
     String inLineQuery =
         "'SELECT count FROM web_requests WHERE $\\{scope} AND $\\{timeFilter}' or 1=1--";
@@ -163,6 +168,7 @@ public class InfluxdbQueryBuilderTest {
     InfluxDbCanaryScope canaryScope = createScope();
     canaryScope.setScope("server:myapp-prod-v002");
     InfluxdbCanaryMetricSetQueryConfig queryConfig = queryConfig(null, null, inLineQuery);
-    queryBuilder.build(queryConfig, canaryScope);
+    assertThrows(
+        IllegalArgumentException.class, () -> queryBuilder.build(queryConfig, canaryScope));
   }
 }

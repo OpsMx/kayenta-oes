@@ -3,3 +3,6 @@ dependencies {
   implementation project(":kayenta-google")
   api "com.google.apis:google-api-services-monitoring"
 }
+test {
+  useJUnitPlatform()
+}

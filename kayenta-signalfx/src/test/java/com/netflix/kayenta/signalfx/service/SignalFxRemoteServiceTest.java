@@ -23,7 +23,7 @@ import static org.junit.Assert.assertThat;
 
 import com.google.common.io.ByteStreams;
 import java.io.InputStream;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import retrofit.mime.TypedByteArray;
 import retrofit.mime.TypedInput;
 

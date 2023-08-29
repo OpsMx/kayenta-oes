@@ -30,13 +30,15 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class PrometheusMetricDescriptorsCacheTest {
 
   private static final String ACCOUNT_1 = "metrics-acc-1";
@@ -47,6 +49,11 @@ public class PrometheusMetricDescriptorsCacheTest {
   @Mock AccountCredentialsRepository accountCredentialRepo;
 
   @InjectMocks PrometheusMetricDescriptorsCache cache;
+
+  @BeforeEach
+  void setUp() {
+    MockitoAnnotations.openMocks(this);
+  }
 
   @Test
   public void returnsEmptyMapIfNoDataForEmptyFilter() {

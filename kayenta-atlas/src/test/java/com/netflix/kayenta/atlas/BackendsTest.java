@@ -12,21 +12,21 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Optional;
 import org.apache.commons.io.IOUtils;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @Configuration
 @ComponentScan({"com.netflix.kayenta.retrofit.config"})
 class BackendsConfig {}
 
-@RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {BackendsConfig.class})
+@ExtendWith(SpringExtension.class)
 public class BackendsTest {
   @Autowired private ResourceLoader resourceLoader;
 

@@ -4,3 +4,6 @@ dependencies {
   testImplementation group: 'junit', name: 'junit'
   testImplementation group: 'org.mock-server', name: 'mockserver-junit-rule', version: '5.10.0'
 }
+test {
+  useJUnitPlatform()
+}

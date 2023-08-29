@@ -27,6 +27,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.openMocks;
 import static org.springframework.http.HttpStatus.BAD_GATEWAY;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
@@ -45,8 +46,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -75,8 +76,9 @@ public class SynchronousQueryProcessorTest {
 
   @InjectMocks SynchronousQueryProcessor processor;
 
-  @Before
+  @BeforeEach
   public void setUp() {
+    openMocks(this);
     when(metricsServiceRepository.getRequiredOne(METRICS)).thenReturn(metricsService);
     when(storageServiceRepository.getRequiredOne(STORAGE)).thenReturn(storageService);
     when(retryConfiguration.getAttempts()).thenReturn(ATTEMPTS);
