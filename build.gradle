@@ -54,6 +54,12 @@ subprojects { project ->
     test {
       testLogging {
         exceptionFormat = "full"
+        afterSuite { desc, result ->
+          if (!desc.parent) {
+            println "Results: ${result.resultType} (${result.testCount} tests, ${result.successfulTestCount} successes, ${result.failedTestCount} failures, ${result.skippedTestCount} skipped)"
+            println "Report file: ${reports.html.entryPoint}"
+          }
+        }
       }
       minHeapSize = "512m"
       maxHeapSize = "512m"
@@ -119,7 +125,6 @@ subprojects { project ->
       testImplementation "org.hamcrest:hamcrest-core"
       //testImplementation "org.apache.groovy:groovy-all"
       testRuntimeOnly "cglib:cglib-nodep"
-      testRuntimeOnly "org.junit.vintage:junit-vintage-engine"
       testRuntimeOnly "org.objenesis:objenesis"
     }
   }

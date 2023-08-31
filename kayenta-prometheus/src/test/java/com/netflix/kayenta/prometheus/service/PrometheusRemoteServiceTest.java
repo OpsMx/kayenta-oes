@@ -36,9 +36,9 @@ import java.util.List;
 import java.util.Scanner;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
-import org.junit.Before;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockserver.client.MockServerClient;
 import org.mockserver.junit.MockServerRule;
 import org.mockserver.model.MediaType;
@@ -55,7 +55,7 @@ public class PrometheusRemoteServiceTest {
   OkHttpClient okHttpClient = new OkHttpClient();
   PrometheusRemoteService prometheusRemoteService;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     prometheusRemoteService = createClient(mockServerClient.getPort());
   }

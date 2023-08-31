@@ -19,13 +19,14 @@ package com.netflix.kayenta.influxdb.config;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertThrows;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.netflix.kayenta.influxdb.model.InfluxDbResult;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import retrofit.converter.ConversionException;
 import retrofit.mime.TypedByteArray;
 import retrofit.mime.TypedInput;
@@ -107,10 +108,11 @@ public class InfluxDbResponseConverterTest {
     assertThat(result, is(results));
   }
 
-  @Test(expected = ConversionException.class)
+  @Test
   public void deserializeWrongValue() throws Exception {
     TypedInput input = new TypedByteArray(MIME_TYPE, "{\"foo\":\"bar\"}".getBytes());
-    influxDbResponseConverter.fromBody(input, List.class);
+    assertThrows(
+        ConversionException.class, () -> influxDbResponseConverter.fromBody(input, List.class));
   }
 
   private String asString(TypedOutput typedOutput) throws Exception {

@@ -22,7 +22,7 @@ import com.netflix.kayenta.canary.CanaryMetricConfig;
 import com.netflix.kayenta.canary.CanaryScope;
 import com.netflix.kayenta.canary.providers.metrics.WavefrontCanaryMetricSetQueryConfig;
 import com.netflix.kayenta.wavefront.canary.WavefrontCanaryScope;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class WavefrontMetricsServiceTest {
 

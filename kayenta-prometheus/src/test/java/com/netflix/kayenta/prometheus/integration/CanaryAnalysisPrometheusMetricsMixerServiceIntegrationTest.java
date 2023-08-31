@@ -22,8 +22,8 @@ import com.netflix.kayenta.security.AccountCredentialsRepository;
 import com.netflix.spectator.api.NoopRegistry;
 import java.time.Instant;
 import java.util.List;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import retrofit.mime.TypedByteArray;
 import retrofit.mime.TypedInput;
@@ -48,7 +48,7 @@ public class CanaryAnalysisPrometheusMetricsMixerServiceIntegrationTest {
 
   private MetricSetMixerService metricSetMixerService;
 
-  @Before
+  @BeforeEach
   public void before() {
     initMocks(this);
     prometheusResponseConverter = new PrometheusResponseConverter(new ObjectMapper());

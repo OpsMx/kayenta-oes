@@ -28,8 +28,8 @@ import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
 public class SetupAndExecuteCanariesStageTest {
@@ -40,7 +40,7 @@ public class SetupAndExecuteCanariesStageTest {
 
   private Instant now = Instant.now();
 
-  @Before
+  @BeforeEach
   public void before() {
     initMocks(this);
 

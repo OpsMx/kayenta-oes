@@ -38,9 +38,9 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.junit.Before;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockserver.client.MockServerClient;
 import org.mockserver.junit.MockServerRule;
 import org.mockserver.model.HttpRequest;
@@ -63,7 +63,7 @@ public class DatadogSecretsDoNotLeakWhenApiCalledFunctionalTest {
 
   DatadogRemoteService datadogRemoteService;
 
-  @Before
+  @BeforeEach
   public void before() {
     listAppender = new ListAppender<>();
     Logger mockLogger =

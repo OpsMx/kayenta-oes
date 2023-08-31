@@ -18,14 +18,14 @@ package com.netflix.kayenta.tests;
 import com.netflix.kayenta.Main;
 import com.netflix.kayenta.configuration.MetricsReportingConfiguration;
 import com.netflix.kayenta.prometheus.config.PrometheusConfiguration;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.actuate.observability.AutoConfigureObservability;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @AutoConfigureObservability
 @ImportAutoConfiguration(PrometheusConfiguration.class)
@@ -34,7 +34,7 @@ import org.springframework.test.context.junit4.SpringRunner;
     classes = {MetricsReportingConfiguration.class, Main.class},
     webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT,
     value = "spring.application.name=kayenta")
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @ActiveProfiles({"base", "prometheus", "graphite", "cases"})
 public abstract class BaseIntegrationTest {
 
