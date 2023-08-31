@@ -3,3 +3,6 @@ dependencies {
 
   testImplementation "org.mock-server:mockserver-junit-jupiter:5.15.0"
 }
+test {
+  useJUnitPlatform()
+}

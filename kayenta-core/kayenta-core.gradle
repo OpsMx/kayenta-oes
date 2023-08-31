@@ -26,5 +26,7 @@ dependencies {
   api "javax.validation:validation-api:+"
 
   testImplementation "io.spinnaker.kork:kork-jedis-test"
-  //testImplementation "org.apache.groovy:groovy-all:+"
+}
+test {
+  useJUnitPlatform()
 }

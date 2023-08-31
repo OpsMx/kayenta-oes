@@ -11,3 +11,6 @@ dependencies {
 
   implementation "io.spinnaker.kork:kork-retrofit"
 }
+test {
+  useJUnitPlatform()
+}

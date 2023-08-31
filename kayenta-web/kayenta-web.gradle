@@ -38,3 +38,6 @@ dependencies {
   runtimeOnly "io.spinnaker.kork:kork-secrets-aws"
   runtimeOnly "io.spinnaker.kork:kork-secrets-gcp"
 }
+test {
+  useJUnitPlatform()
+}

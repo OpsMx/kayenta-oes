@@ -16,6 +16,10 @@ test.testLogging {
     showStandardStreams = true
 }
 
+test {
+    useJUnitPlatform()
+}
+
 gradle.taskGraph.whenReady {
     tasks.test.enabled = (
       properties.getOrDefault('DISABLE_INTEGRATION_TESTS', 'false') != 'true'
