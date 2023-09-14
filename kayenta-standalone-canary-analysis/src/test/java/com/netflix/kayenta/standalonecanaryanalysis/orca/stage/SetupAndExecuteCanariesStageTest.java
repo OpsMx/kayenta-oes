@@ -28,6 +28,7 @@ import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -77,11 +78,13 @@ public class SetupAndExecuteCanariesStageTest {
     assertEquals("The duration should be 5 minutes", expected, actual);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void
       test_that_calculateLifetime_throws_an_error_if_lifetime_and_start_and_endtime_not_provided() {
     Instant now = Instant.now();
-    stage.calculateLifetime(now, null, CanaryAnalysisExecutionRequest.builder().build());
+    Assertions.assertThrows(
+        IllegalArgumentException.class,
+        () -> stage.calculateLifetime(now, null, CanaryAnalysisExecutionRequest.builder().build()));
   }
 
   @Test
