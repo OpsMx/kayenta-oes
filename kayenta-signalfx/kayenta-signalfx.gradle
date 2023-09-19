@@ -109,7 +109,7 @@ integrationTest {
 dependencies {
   implementation project(":kayenta-core")
 
-  api 'com.signalfx.public:signalfx-java:1.0.31'
+  api 'com.signalfx.public:signalfx-java:1.0.34'
 
   testImplementation 'com.tngtech.java:junit-dataprovider:1.13.1'
   testImplementation project(":kayenta-standalone-canary-analysis")
