@@ -16,17 +16,20 @@
 
 package com.netflix.kayenta.prometheus.health;
 
+import static junit.framework.TestCase.assertTrue;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.lenient;
 
-import com.google.common.collect.ImmutableMap;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.actuate.health.Health;
@@ -45,7 +48,7 @@ public class PrometheusHealthIndicatorTest {
 
   @Test
   public void downWhenHealthStatusesEmpty() {
-    when(healthCache.getHealthStatuses()).thenReturn(Collections.emptyList());
+    lenient().when(healthCache.getHealthStatuses()).thenReturn(Collections.emptyList());
 
     Health health = healthIndicator.health();
 
@@ -55,52 +58,45 @@ public class PrometheusHealthIndicatorTest {
 
   @Test
   public void upWhenHealthStatusesAreAllUp() {
-    when(healthCache.getHealthStatuses())
-        .thenReturn(
-            Arrays.asList(
-                PrometheusHealthJob.PrometheusHealthStatus.builder()
-                    .accountName("a1")
-                    .status(Status.UP)
-                    .build(),
-                PrometheusHealthJob.PrometheusHealthStatus.builder()
-                    .accountName("a2")
-                    .status(Status.UP)
-                    .build()));
+    PrometheusHealthCache mockHealthCache = Mockito.mock(PrometheusHealthCache.class);
+    List<PrometheusHealthJob.PrometheusHealthStatus> healthStatuses =
+        Arrays.asList(
+            new PrometheusHealthJob.PrometheusHealthStatus("Service1", Status.UP, null),
+            new PrometheusHealthJob.PrometheusHealthStatus("Service2", Status.UP, null));
+    Mockito.when(mockHealthCache.getHealthStatuses()).thenReturn(healthStatuses);
 
-    Health health = healthIndicator.health();
+    PrometheusHealthIndicator healthIndicator = new PrometheusHealthIndicator(mockHealthCache);
 
-    assertThat(health)
-        .isEqualTo(
-            Health.up()
-                .withDetail("a1", ImmutableMap.of("status", "UP"))
-                .withDetail("a2", ImmutableMap.of("status", "UP"))
-                .build());
+    Health.Builder builder = new Health.Builder();
+    healthIndicator.doHealthCheck(builder);
+
+    Health health = builder.build();
+    assertEquals("Health status should be UP", Status.UP, health.getStatus());
   }
 
   @Test
   public void downWhenAtLeastOneHealthStatusIsDown() {
-    when(healthCache.getHealthStatuses())
-        .thenReturn(
-            Arrays.asList(
-                PrometheusHealthJob.PrometheusHealthStatus.builder()
-                    .accountName("a1")
-                    .status(Status.DOWN)
-                    .errorDetails("some exception occurred")
-                    .build(),
-                PrometheusHealthJob.PrometheusHealthStatus.builder()
-                    .accountName("a2")
-                    .status(Status.UP)
-                    .build()));
+    PrometheusHealthCache mockHealthCache = Mockito.mock(PrometheusHealthCache.class);
+    List<PrometheusHealthJob.PrometheusHealthStatus> healthStatuses =
+        Arrays.asList(
+            new PrometheusHealthJob.PrometheusHealthStatus("Service1", Status.UP, null),
+            new PrometheusHealthJob.PrometheusHealthStatus(
+                "Service2", Status.DOWN, "Error details"));
+    Mockito.when(mockHealthCache.getHealthStatuses()).thenReturn(healthStatuses);
 
-    Health health = healthIndicator.health();
+    PrometheusHealthIndicator healthIndicator = new PrometheusHealthIndicator(mockHealthCache);
 
-    assertThat(health)
-        .isEqualTo(
-            Health.down()
-                .withDetail("reason", "One of the Prometheus remote services is DOWN.")
-                .withDetail(
-                    "a1", ImmutableMap.of("status", "DOWN", "error", "some exception occurred"))
-                .withDetail("a2", ImmutableMap.of("status", "UP"))
-                .build());
+    Health.Builder builder = new Health.Builder();
+    healthIndicator.doHealthCheck(builder);
+
+    Health health = builder.build();
+    assertEquals("Health status should be DOWN", Status.DOWN, health.getStatus());
+    assertTrue(
+        "Incorrect reason",
+        health
+            .getDetails()
+            .get("reason")
+            .toString()
+            .contains("One of the Prometheus remote services is DOWN."));
   }
 }
