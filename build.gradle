@@ -105,7 +105,7 @@ subprojects { project ->
         api 'org.scala-lang:scala-library-all:2.12.12'
         api 'org.scala-lang:scala-reflect:2.12.12'
         api 'com.typesafe.scala-logging:scala-logging_2.12:3.9.2'
-        api 'org.apache.ivy:ivy:2.5.2'
+        implementation 'org.apache.ivy:ivy:2.5.2'
         testImplementation 'org.scalatest:scalatest_2.12:3.0.9'
         testRuntimeOnly 'org.scalatestplus:junit-5-9_2.12:3.2.16.0'
       }
