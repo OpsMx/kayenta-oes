@@ -25,12 +25,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
-<<<<<<< HEAD
-import org.junit.jupiter.api.Test;
-=======
 import java.util.Set;
-import org.junit.Test;
->>>>>>> ca455ad (feat: Add API endpoint to remove account credentials by account name(id) (#939))
+import org.junit.jupiter.api.Test;
 
 public class MapBackedAccountCredentialsRepositoryTest {
 
