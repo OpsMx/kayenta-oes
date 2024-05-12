@@ -3,8 +3,8 @@ dependencies {
   api "io.spinnaker.orca:orca-queue"
   api "io.spinnaker.orca:orca-queue-redis"
   api "io.spinnaker.orca:orca-redis"
+  api "io.spinnaker.kork:kork-swagger"
   api "org.springframework.boot:spring-boot-starter-actuator"
-  api "io.swagger:swagger-annotations:1.5.20"
   api "com.jakewharton.retrofit:retrofit1-okhttp3-client:1.1.0"
 
   // TODO(duftler): Move these to spinnaker-dependencies.
