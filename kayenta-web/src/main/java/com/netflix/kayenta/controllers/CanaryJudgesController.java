@@ -18,12 +18,7 @@ package com.netflix.kayenta.controllers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.common.collect.ImmutableMap;
-import com.netflix.kayenta.canary.CanaryClassifierThresholdsConfig;
-import com.netflix.kayenta.canary.CanaryConfig;
-import com.netflix.kayenta.canary.CanaryExecutionResponse;
-import com.netflix.kayenta.canary.CanaryJudge;
-import com.netflix.kayenta.canary.CanaryJudgeConfig;
-import com.netflix.kayenta.canary.ExecutionMapper;
+import com.netflix.kayenta.canary.*;
 import com.netflix.kayenta.canary.results.CanaryJudgeResult;
 import com.netflix.kayenta.metrics.MetricSetPair;
 import com.netflix.kayenta.security.AccountCredentials;
@@ -35,20 +30,15 @@ import com.netflix.spinnaker.orca.api.pipeline.models.ExecutionType;
 import com.netflix.spinnaker.orca.api.pipeline.models.PipelineExecution;
 import com.netflix.spinnaker.orca.api.pipeline.models.StageExecution;
 import com.netflix.spinnaker.orca.pipeline.persistence.ExecutionRepository;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/judges")
@@ -74,14 +64,14 @@ public class CanaryJudgesController {
     this.canaryJudges = canaryJudges;
   }
 
-  @ApiOperation(value = "Retrieve a list of all configured canary judges")
+  @Operation(summary = "Retrieve a list of all configured canary judges")
   @GetMapping
   List<CanaryJudge> list() {
     return canaryJudges;
   }
 
-  @ApiOperation(
-      value =
+  @Operation(
+      summary =
           "Exercise a judge directly, without any orchestration or querying of metrics services")
   @PostMapping(value = "/judge")
   public CanaryJudgeResult judge(
@@ -141,18 +131,20 @@ public class CanaryJudgesController {
     return canaryJudge.judge(canaryConfig, canaryClassifierThresholdsConfig, metricSetPairList);
   }
 
-  @ApiOperation(value = "Apply a pair of judges to a canned set of data")
+  @Operation(summary = "Apply a pair of judges to a canned set of data")
   @PostMapping(value = "/comparison")
   public CanaryExecutionResponse initiateJudgeComparison(
       @RequestParam(required = false) final String configurationAccountName,
       @RequestParam(required = false) final String storageAccountName,
       @RequestParam final String canaryConfigId,
-      @ApiParam(
-              value = "The name of the first judge to use, e.g. NetflixACAJudge-v1.0, dredd-v1.0.")
+      @Parameter(
+              description =
+                  "The name of the first judge to use, e.g. NetflixACAJudge-v1.0, dredd-v1.0.")
           @RequestParam(required = false)
           final String overrideCanaryJudge1,
-      @ApiParam(
-              value = "The name of the second judge to use, e.g. NetflixACAJudge-v1.0, dredd-v1.0.")
+      @Parameter(
+              description =
+                  "The name of the second judge to use, e.g. NetflixACAJudge-v1.0, dredd-v1.0.")
           @RequestParam(required = false)
           final String overrideCanaryJudge2,
       @RequestParam final String metricSetPairListId,
@@ -188,7 +180,7 @@ public class CanaryJudgesController {
         resolvedStorageAccountName);
   }
 
-  @ApiOperation(value = "Retrieve the results of a judge comparison")
+  @Operation(summary = "Retrieve the results of a judge comparison")
   @GetMapping(value = "/comparison/{executionId:.+}")
   public Map getJudgeComparisonResults(@PathVariable String executionId) {
     PipelineExecution pipeline = executionRepository.retrieve(ExecutionType.PIPELINE, executionId);
