@@ -28,9 +28,10 @@ import com.netflix.spinnaker.orca.api.pipeline.models.ExecutionType;
 import com.netflix.spinnaker.orca.api.pipeline.models.PipelineExecution;
 import com.netflix.spinnaker.orca.pipeline.persistence.ExecutionNotFoundException;
 import com.netflix.spinnaker.orca.pipeline.persistence.ExecutionRepository;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import java.util.*;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
@@ -66,7 +67,7 @@ public class CanaryController {
   // Initiate a new canary run.
   //
   // TODO(duftler): Allow for user to be passed in.
-  @ApiOperation(value = "Initiate a canary pipeline")
+  @Operation(summary = "Initiate a canary pipeline")
   @RequestMapping(
       value = "/{canaryConfigId:.+}",
       consumes = "application/json",
@@ -77,7 +78,7 @@ public class CanaryController {
       @RequestParam(required = false) final String metricsAccountName,
       @RequestParam(required = false) final String configurationAccountName,
       @RequestParam(required = false) final String storageAccountName,
-      @ApiParam @RequestBody final CanaryExecutionRequest canaryExecutionRequest,
+      @Parameter @RequestBody final CanaryExecutionRequest canaryExecutionRequest,
       @PathVariable String canaryConfigId)
       throws JsonProcessingException {
     String resolvedMetricsAccountName =
@@ -114,14 +115,14 @@ public class CanaryController {
   // Initiate a new canary run, fully specifying the config and execution request
   //
   // TODO(duftler): Allow for user to be passed in.
-  @ApiOperation(value = "Initiate a canary pipeline with CanaryConfig provided")
+  @Operation(summary = "Initiate a canary pipeline with CanaryConfig provided")
   @RequestMapping(consumes = "application/json", method = RequestMethod.POST)
   public CanaryExecutionResponse initiateCanaryWithConfig(
       @RequestParam(required = false) final String application,
       @RequestParam(required = false) final String parentPipelineExecutionId,
       @RequestParam(required = false) final String metricsAccountName,
       @RequestParam(required = false) final String storageAccountName,
-      @ApiParam @RequestBody final CanaryAdhocExecutionRequest canaryAdhocExecutionRequest)
+      @Parameter @RequestBody final CanaryAdhocExecutionRequest canaryAdhocExecutionRequest)
       throws JsonProcessingException {
 
     String resolvedMetricsAccountName =
@@ -154,7 +155,7 @@ public class CanaryController {
   //
   // Get the results of a canary run by ID
   //
-  @ApiOperation(value = "Retrieve status and results for a canary run")
+  @Operation(summary = "Retrieve status and results for a canary run")
   @RequestMapping(value = "/{canaryExecutionId:.+}", method = RequestMethod.GET)
   public CanaryExecutionStatusResponse getCanaryResults(
       @RequestParam(required = false) final String storageAccountName,
@@ -178,7 +179,7 @@ public class CanaryController {
     }
   }
 
-  @ApiOperation(value = "Retrieve a list of an application's canary results")
+  @Operation(summary = "Retrieve a list of an application's canary results")
   @RequestMapping(value = "/executions", method = RequestMethod.GET)
   List<CanaryExecutionStatusResponse> getCanaryResultsByApplication(
       @RequestParam(required = false) String application,
