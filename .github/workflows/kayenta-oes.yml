@@ -32,7 +32,7 @@ jobs:
           echo ::set-output name=REPO::ubi8-kayenta-cve
           #echo ::set-output name=VERSION::"1.30.1$(date --utc +'%Y%m%d')"
           #echo ::set-output name=VERSION::"1.30.1$(date --utc +'%-m%d')"
-          echo ::set-output name=VERSION::"1.30.1"
+          echo ::set-output name=VERSION::"1.33.x"
           echo "::set-output name=GITHASH::$(git rev-parse --short HEAD)"
           echo "::set-output name=BUILDDATE::$(date -u +"%Y%m%d%H%M")"
       - name: Login to Quay
@@ -47,12 +47,12 @@ jobs:
           ORG_GRADLE_PROJECT_version: ${{ steps.build_variables.outputs.VERSION }}
         run: |
         
-              sed  -e 's/NEXUS_URL/${{ secrets.NEXUS_URL }}/'  -i settings.gradle
-              sed  -e 's/NEXUS_USERNAME/${{ secrets.NEXUS_USERNAME }}/' -i settings.gradle
-              sed  -e 's/NEXUS_PASSWORD/${{ secrets.NEXUS_PASSWORD }}/' -i settings.gradle
-              sed  -e 's/NEXUS_USERNAME/${{ secrets.NEXUS_USERNAME }}/' -i build.gradle
-              sed  -e 's/NEXUS_PASSWORD/${{ secrets.NEXUS_PASSWORD }}/' -i build.gradle
-              sed  -e 's/NEXUS_URL/${{ secrets.NEXUS_URL }}/' -i build.gradle
+              sed  -e 's|NEXUS_USERNAME|${{ secrets.NEXUS_USERNAME }}|' -i settings.gradle
+              sed  -e 's|NEXUS_PASSWORD|${{ secrets.NEXUS_PASSWORD }}|' -i settings.gradle
+              sed  -e 's|NEXUS_USERNAME|${{ secrets.NEXUS_USERNAME }}|' -i build.gradle
+              sed  -e 's|NEXUS_PASSWORD|${{ secrets.NEXUS_PASSWORD }}|' -i build.gradle
+              sed  -e 's|NEXUS_URL|${{ secrets.NEXUS_URL }}|' -i settings.gradle
+              sed  -e 's|NEXUS_URL|${{ secrets.NEXUS_URL }}|' -i build.gradle
            
               ./gradlew --no-daemon -PenableCrossCompilerPlugin=true kayenta-web:installDist -x test 
 
