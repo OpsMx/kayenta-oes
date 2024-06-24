@@ -30,8 +30,8 @@ jobs:
         id: build_variables
         run: |
           echo ::set-output name=REPO::ubi8-kayenta-cve
-          #echo ::set-output name=VERSION::"1.33.1$(date --utc +'%Y%m%d')"
-          #echo ::set-output name=VERSION::"1.33.1$(date --utc +'%-m%d')"
+          #echo ::set-output name=VERSION::"1.33.x$(date --utc +'%Y%m%d')"
+          #echo ::set-output name=VERSION::"1.33.x$(date --utc +'%-m%d')"
           echo ::set-output name=VERSION::"1.33.2"
           echo "::set-output name=GITHASH::$(git rev-parse --short HEAD)"
           echo "::set-output name=BUILDDATE::$(date -u +"%Y%m%d%H%M")"

@@ -16,9 +16,8 @@
 
 package com.netflix.kayenta.influxdb.service;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertThrows;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.netflix.kayenta.canary.providers.metrics.InfluxdbCanaryMetricSetQueryConfig;
 import com.netflix.kayenta.influxdb.canary.InfluxDbCanaryScope;
@@ -39,10 +38,9 @@ public class InfluxdbQueryBuilderTest {
     InfluxDbCanaryScope canaryScope = createScope();
     InfluxdbCanaryMetricSetQueryConfig queryConfig = queryConfig(measurement, fieldsList(), null);
     String query = queryBuilder.build(queryConfig, canaryScope);
-    assertThat(
-        query,
-        is(
-            "SELECT external, internal FROM temperature WHERE time >= '2010-01-01T12:00:00Z' AND time < '2010-01-01T12:01:40Z'"));
+    assertThat(query)
+        .isEqualTo(
+            "SELECT external, internal FROM temperature WHERE time >= '2010-01-01T12:00:00Z' AND time < '2010-01-01T12:01:40Z'");
   }
 
   private InfluxDbCanaryScope createScope() {
@@ -78,10 +76,9 @@ public class InfluxdbQueryBuilderTest {
     canaryScope.setScope("server:myapp-prod-v002");
     InfluxdbCanaryMetricSetQueryConfig queryConfig = queryConfig(measurement, fieldsList(), null);
     String query = queryBuilder.build(queryConfig, canaryScope);
-    assertThat(
-        query,
-        is(
-            "SELECT external, internal FROM temperature WHERE time >= '2010-01-01T12:00:00Z' AND time < '2010-01-01T12:01:40Z' AND server = 'myapp-prod-v002'"));
+    assertThat(query)
+        .isEqualTo(
+            "SELECT external, internal FROM temperature WHERE time >= '2010-01-01T12:00:00Z' AND time < '2010-01-01T12:01:40Z' AND server = 'myapp-prod-v002'");
   }
 
   private InfluxdbCanaryMetricSetQueryConfig queryConfig(
@@ -103,10 +100,9 @@ public class InfluxdbQueryBuilderTest {
     canaryScope.setScope("server:myapp-prod-v002");
     InfluxdbCanaryMetricSetQueryConfig queryConfig = queryConfig(measurement, null, null);
     String query = queryBuilder.build(queryConfig, canaryScope);
-    assertThat(
-        query,
-        is(
-            "SELECT *::field FROM temperature WHERE time >= '2010-01-01T12:00:00Z' AND time < '2010-01-01T12:01:40Z' AND server = 'myapp-prod-v002'"));
+    assertThat(query)
+        .isEqualTo(
+            "SELECT *::field FROM temperature WHERE time >= '2010-01-01T12:00:00Z' AND time < '2010-01-01T12:01:40Z' AND server = 'myapp-prod-v002'");
   }
 
   @Test
@@ -130,10 +126,9 @@ public class InfluxdbQueryBuilderTest {
     canaryScope.setScope("server:myapp-prod-v002");
     InfluxdbCanaryMetricSetQueryConfig queryConfig = queryConfig(null, null, inLineQuery);
     String query = queryBuilder.build(queryConfig, canaryScope);
-    assertThat(
-        query,
-        is(
-            "SELECT count FROM measurement WHERE label1 = 'value1' AND time >= '2010-01-01T12:00:00Z' AND time < '2010-01-01T12:01:40Z' AND server = 'myapp-prod-v002'"));
+    assertThat(query)
+        .isEqualTo(
+            "SELECT count FROM measurement WHERE label1 = 'value1' AND time >= '2010-01-01T12:00:00Z' AND time < '2010-01-01T12:01:40Z' AND server = 'myapp-prod-v002'");
   }
 
   @Test

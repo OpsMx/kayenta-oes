@@ -17,9 +17,8 @@
 
 package com.netflix.kayenta.signalfx.service;
 
-import static org.hamcrest.Matchers.greaterThan;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import com.google.common.io.ByteStreams;
 import java.io.InputStream;
@@ -39,9 +38,8 @@ public class SignalFxRemoteServiceTest {
         (SignalFlowExecutionResult) converter.fromBody(typedInput, SignalFlowExecutionResult.class);
 
     assertNotNull(signalFlowExecutionResult);
-    assertThat(
-        "The signalFlowExecutionResult contains the channel messages",
-        signalFlowExecutionResult.getChannelMessages().size(),
-        greaterThan(1));
+    assertThat(signalFlowExecutionResult.getChannelMessages().size())
+        .describedAs("The signalFlowExecutionResult contains the channel messages")
+        .isGreaterThan(1);
   }
 }

@@ -16,9 +16,9 @@
 
 package com.netflix.kayenta.sql.storage;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -114,7 +114,7 @@ public class SqlStorageServiceTest {
   }
 
   @Test
-  public void testLoadObjectWhenCanaryArchiveNotFound() throws IOException {
+  public void testLoadObjectWhenCanaryArchiveNotFound() {
     var testAccountName = UUID.randomUUID().toString();
     var testObjectType = ObjectType.CANARY_RESULT_ARCHIVE;
     var testObjectKey = UUID.randomUUID().toString();

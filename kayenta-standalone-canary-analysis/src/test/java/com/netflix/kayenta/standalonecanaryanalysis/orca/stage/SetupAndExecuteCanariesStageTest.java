@@ -16,7 +16,8 @@
 
 package com.netflix.kayenta.standalonecanaryanalysis.orca.stage;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -59,7 +60,7 @@ public class SetupAndExecuteCanariesStageTest {
     Duration actual = stage.calculateLifetime(now, later, request);
     Duration expected = Duration.ofMinutes(lifetimeInMinutes);
 
-    assertEquals("The duration should be 5 minutes", expected, actual);
+    assertEquals(expected, actual, "The duration should be 5 minutes");
   }
 
   @Test
@@ -74,14 +75,16 @@ public class SetupAndExecuteCanariesStageTest {
     Duration actual = stage.calculateLifetime(now, later, request);
     Duration expected = Duration.ofMinutes(lifetimeInMinutes);
 
-    assertEquals("The duration should be 5 minutes", expected, actual);
+    assertEquals(expected, actual, "The duration should be 5 minutes");
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void
       test_that_calculateLifetime_throws_an_error_if_lifetime_and_start_and_endtime_not_provided() {
     Instant now = Instant.now();
-    stage.calculateLifetime(now, null, CanaryAnalysisExecutionRequest.builder().build());
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> stage.calculateLifetime(now, null, CanaryAnalysisExecutionRequest.builder().build()));
   }
 
   @Test

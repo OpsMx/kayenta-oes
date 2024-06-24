@@ -43,15 +43,16 @@ subprojects { project ->
         mavenLocal()
         maven{
           url  "NEXUS_URL"
-              credentials {
-                    username = "NEXUS_USERNAME"
-                    password = "NEXUS_PASSWORD"
-                         }
+          credentials {
+            username = "NEXUS_USERNAME"
+            password = "NEXUS_PASSWORD"
+          }
         }
       }
     }
 
     test {
+      useJUnitPlatform()
       testLogging {
         exceptionFormat = "full"
         afterSuite { desc, result ->
@@ -68,6 +69,17 @@ subprojects { project ->
     tasks.withType(JavaExec) {
       if (System.getProperty('DEBUG', 'false') == 'true') {
         jvmArgs '-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=8191'
+      }
+    }
+
+    tasks.withType(JavaCompile).configureEach {
+      javaCompiler = javaToolchains.compilerFor {
+        languageVersion = JavaLanguageVersion.of(17)
+      }
+    }
+    tasks.withType(Test).configureEach {
+      javaLauncher = javaToolchains.launcherFor {
+        languageVersion = JavaLanguageVersion.of(17)
       }
     }
 
@@ -95,6 +107,7 @@ subprojects { project ->
         api 'com.typesafe.scala-logging:scala-logging_2.12:3.9.2'
         implementation 'org.apache.ivy:ivy:2.5.2'
         testImplementation 'org.scalatest:scalatest_2.12:3.0.9'
+        testRuntimeOnly 'org.scalatestplus:junit-5-9_2.12:3.2.16.0'
       }
       implementation enforcedPlatform("io.spinnaker.orca:orca-bom:$orcaVersion")
       compileOnly "org.projectlombok:lombok"
@@ -127,6 +140,8 @@ subprojects { project ->
       //testImplementation "org.apache.groovy:groovy-all"
       testRuntimeOnly "cglib:cglib-nodep"
       testRuntimeOnly "org.objenesis:objenesis"
+      testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine"
+      testRuntimeOnly "org.junit.vintage:junit-vintage-engine" //Required for spock tests to execute along with junit5 tests
     }
   }
 

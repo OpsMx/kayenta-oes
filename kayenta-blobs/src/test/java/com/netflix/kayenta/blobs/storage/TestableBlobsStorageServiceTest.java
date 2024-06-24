@@ -16,6 +16,7 @@
 
 package com.netflix.kayenta.blobs.storage;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -28,11 +29,9 @@ import com.netflix.kayenta.security.AccountCredentialsRepository;
 import com.netflix.kayenta.security.MapBackedAccountCredentialsRepository;
 import com.netflix.kayenta.storage.ObjectType;
 import com.netflix.spinnaker.kork.web.exceptions.NotFoundException;
-import com.tngtech.java.junit.dataprovider.*;
 import java.util.*;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -82,7 +81,7 @@ public class TestableBlobsStorageServiceTest {
   @MethodSource("servicesAccountDataset")
   public void servicesAccount(String accountName, boolean expected) {
     log.info(String.format("Running servicesAccountTest(%s)", accountName));
-    Assertions.assertEquals(expected, testBlobsStorageService.servicesAccount(accountName));
+    assertEquals(expected, testBlobsStorageService.servicesAccount(accountName));
   }
 
   @ParameterizedTest
@@ -103,19 +102,18 @@ public class TestableBlobsStorageServiceTest {
 
       CanaryConfig result =
           testBlobsStorageService.loadObject(accountName, objectType, testItemKey);
-      Assertions.assertEquals(applications.get(0), result.getApplications().get(0));
+      assertEquals(applications.get(0), result.getApplications().get(0));
     } catch (IllegalArgumentException e) {
-      Assertions.assertEquals("Unable to resolve account " + accountName + ".", e.getMessage());
+      assertEquals("Unable to resolve account " + accountName + ".", e.getMessage());
     } catch (NotFoundException e) {
-      Assertions.assertEquals(
+      assertEquals(
           "Could not fetch items from Azure Cloud Storage: Item not found at "
               + rootFolder
               + "/canary_config/"
               + testItemKey,
           e.getMessage());
     } catch (IllegalStateException e) {
-      Assertions.assertEquals(
-          "Unable to deserialize object (key: " + testItemKey + ")", e.getMessage());
+      assertEquals("Unable to deserialize object (key: " + testItemKey + ")", e.getMessage());
     }
   }
 
@@ -146,9 +144,9 @@ public class TestableBlobsStorageServiceTest {
       testBlobsStorageService.storeObject(
           accountName, objectType, testItemKey, canaryConfig, fakeFileName, isAnUpdate);
       HashMap<String, String> result = testBlobsStorageService.blobStored;
-      Assertions.assertEquals(fakeBlobName, result.get("blob"));
+      assertEquals(fakeBlobName, result.get("blob"));
     } catch (IllegalArgumentException e) {
-      Assertions.assertEquals("Unable to resolve account " + accountName + ".", e.getMessage());
+      assertEquals("Unable to resolve account " + accountName + ".", e.getMessage());
     }
   }
 
@@ -176,10 +174,9 @@ public class TestableBlobsStorageServiceTest {
           "Running deleteObjectTest for rootFolder/" + objectType.getGroup() + "/" + testItemKey);
       testBlobsStorageService.deleteObject(accountName, objectType, testItemKey);
       HashMap<String, String> result = testBlobsStorageService.blobStored;
-      Assertions.assertEquals(
-          "invoked", result.get(String.format("deleteIfexists(%s)", fakeBlobName)));
+      assertEquals("invoked", result.get(String.format("deleteIfexists(%s)", fakeBlobName)));
     } catch (IllegalArgumentException e) {
-      Assertions.assertEquals("Unable to resolve account " + accountName + ".", e.getMessage());
+      assertEquals("Unable to resolve account " + accountName + ".", e.getMessage());
     }
   }
 
@@ -193,12 +190,12 @@ public class TestableBlobsStorageServiceTest {
       List<Map<String, Object>> result =
           testBlobsStorageService.listObjectKeys(accountName, objectType, applications, skipIndex);
       if (objectType == ObjectType.CANARY_CONFIG) {
-        Assertions.assertEquals("canary_test", result.get(0).get("name"));
+        assertEquals("canary_test", result.get(0).get("name"));
       } else {
-        Assertions.assertEquals(6, result.size());
+        assertEquals(6, result.size());
       }
     } catch (IllegalArgumentException e) {
-      Assertions.assertEquals("Unable to resolve account " + accountName + ".", e.getMessage());
+      assertEquals("Unable to resolve account " + accountName + ".", e.getMessage());
     }
   }
 

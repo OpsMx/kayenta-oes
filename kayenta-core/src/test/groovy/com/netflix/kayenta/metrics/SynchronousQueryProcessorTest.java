@@ -22,12 +22,12 @@ import static org.mockito.Answers.RETURNS_DEEP_STUBS;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.openMocks;
 import static org.springframework.http.HttpStatus.BAD_GATEWAY;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
@@ -40,6 +40,8 @@ import com.netflix.kayenta.storage.ObjectType;
 import com.netflix.kayenta.storage.StorageService;
 import com.netflix.kayenta.storage.StorageServiceRepository;
 import com.netflix.spectator.api.Registry;
+import com.netflix.spinnaker.kork.retrofit.exceptions.SpinnakerHttpException;
+import com.netflix.spinnaker.kork.retrofit.exceptions.SpinnakerNetworkException;
 import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.util.Arrays;
@@ -48,15 +50,15 @@ import java.util.HashSet;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
+@ExtendWith(MockitoExtension.class)
 public class SynchronousQueryProcessorTest {
 
   private static final String METRICS = "metrics-account";
@@ -78,15 +80,17 @@ public class SynchronousQueryProcessorTest {
 
   @BeforeEach
   public void setUp() {
-    openMocks(this);
     when(metricsServiceRepository.getRequiredOne(METRICS)).thenReturn(metricsService);
     when(storageServiceRepository.getRequiredOne(STORAGE)).thenReturn(storageService);
-    when(retryConfiguration.getAttempts()).thenReturn(ATTEMPTS);
-    when(retryConfiguration.getSeries())
+    lenient().when(retryConfiguration.getAttempts()).thenReturn(ATTEMPTS);
+    lenient()
+        .when(retryConfiguration.getSeries())
         .thenReturn(
             new HashSet<>(
                 Arrays.asList(HttpStatus.Series.SERVER_ERROR, HttpStatus.Series.REDIRECTION)));
-    when(retryConfiguration.getStatuses()).thenReturn(new HashSet<>(Arrays.asList(LOCKED)));
+    lenient()
+        .when(retryConfiguration.getStatuses())
+        .thenReturn(new HashSet<>(Arrays.asList(LOCKED)));
   }
 
   @Test
@@ -96,7 +100,7 @@ public class SynchronousQueryProcessorTest {
             any(CanaryConfig.class),
             any(CanaryMetricConfig.class),
             any(CanaryScope.class)))
-        .thenThrow(getRetrofitErrorWithHttpStatus(INTERNAL_SERVER_ERROR.value()));
+        .thenThrow(getSpinnakerHttpException(INTERNAL_SERVER_ERROR.value()));
 
     assertThatThrownBy(
             () ->
@@ -106,7 +110,7 @@ public class SynchronousQueryProcessorTest {
                     mock(CanaryConfig.class, RETURNS_DEEP_STUBS),
                     1,
                     mock(CanaryScope.class)))
-        .isInstanceOf(RetrofitError.class);
+        .isInstanceOf(SpinnakerHttpException.class);
 
     verify(metricsService, times(ATTEMPTS))
         .queryMetrics(
@@ -125,9 +129,9 @@ public class SynchronousQueryProcessorTest {
             any(CanaryConfig.class),
             any(CanaryMetricConfig.class),
             any(CanaryScope.class)))
-        .thenThrow(getRetrofitErrorWithHttpStatus(INTERNAL_SERVER_ERROR.value()))
-        .thenThrow(getRetrofitErrorWithHttpStatus(BAD_GATEWAY.value()))
-        .thenThrow(getRetrofitErrorWithHttpStatus(HttpStatus.TEMPORARY_REDIRECT.value()))
+        .thenThrow(getSpinnakerHttpException(INTERNAL_SERVER_ERROR.value()))
+        .thenThrow(getSpinnakerHttpException(BAD_GATEWAY.value()))
+        .thenThrow(getSpinnakerHttpException(HttpStatus.TEMPORARY_REDIRECT.value()))
         .thenReturn(response);
 
     processor.executeQuery(
@@ -151,9 +155,9 @@ public class SynchronousQueryProcessorTest {
             any(CanaryConfig.class),
             any(CanaryMetricConfig.class),
             any(CanaryScope.class)))
-        .thenThrow(getRetrofitErrorWithHttpStatus(LOCKED.value()))
-        .thenThrow(getRetrofitErrorWithHttpStatus(LOCKED.value()))
-        .thenThrow(getRetrofitErrorWithHttpStatus(LOCKED.value()))
+        .thenThrow(getSpinnakerHttpException(LOCKED.value()))
+        .thenThrow(getSpinnakerHttpException(LOCKED.value()))
+        .thenThrow(getSpinnakerHttpException(LOCKED.value()))
         .thenReturn(response);
 
     processor.executeQuery(
@@ -176,7 +180,7 @@ public class SynchronousQueryProcessorTest {
             any(CanaryConfig.class),
             any(CanaryMetricConfig.class),
             any(CanaryScope.class)))
-        .thenThrow(getRetrofitErrorWithHttpStatus(BAD_REQUEST.value()));
+        .thenThrow(getSpinnakerHttpException(BAD_REQUEST.value()));
 
     assertThatThrownBy(
             () ->
@@ -186,7 +190,7 @@ public class SynchronousQueryProcessorTest {
                     mock(CanaryConfig.class, RETURNS_DEEP_STUBS),
                     1,
                     mock(CanaryScope.class)))
-        .isInstanceOf(RetrofitError.class);
+        .isInstanceOf(SpinnakerHttpException.class);
 
     verify(metricsService, times(1))
         .queryMetrics(
@@ -232,7 +236,9 @@ public class SynchronousQueryProcessorTest {
             any(CanaryConfig.class),
             any(CanaryMetricConfig.class),
             any(CanaryScope.class)))
-        .thenThrow(RetrofitError.networkError("url", new SocketTimeoutException()));
+        .thenThrow(
+            new SpinnakerNetworkException(
+                RetrofitError.networkError("http://some-url", new SocketTimeoutException())));
 
     assertThatThrownBy(
             () ->
@@ -242,7 +248,7 @@ public class SynchronousQueryProcessorTest {
                     mock(CanaryConfig.class, RETURNS_DEEP_STUBS),
                     1,
                     mock(CanaryScope.class)))
-        .isInstanceOf(RetrofitError.class);
+        .isInstanceOf(SpinnakerNetworkException.class);
 
     verify(metricsService, times(ATTEMPTS))
         .queryMetrics(
@@ -253,8 +259,12 @@ public class SynchronousQueryProcessorTest {
     verifyNoInteractions(storageService);
   }
 
-  private RetrofitError getRetrofitErrorWithHttpStatus(int status) {
-    return RetrofitError.httpError(
-        "url", new Response("url", status, "reason", Collections.emptyList(), null), null, null);
+  private SpinnakerHttpException getSpinnakerHttpException(int status) {
+    return new SpinnakerHttpException(
+        RetrofitError.httpError(
+            "url",
+            new Response("url", status, "reason", Collections.emptyList(), null),
+            null,
+            null));
   }
 }

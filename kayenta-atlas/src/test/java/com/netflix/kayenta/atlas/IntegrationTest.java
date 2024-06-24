@@ -43,8 +43,8 @@ class CanaryMetricConfigWithResults {
   @NotNull @Getter private List<AtlasResults> atlasResults;
 }
 
-@ContextConfiguration(classes = {TestConfig.class})
 @ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = {TestConfig.class})
 public class IntegrationTest {
 
   @Autowired private ResourceLoader resourceLoader;

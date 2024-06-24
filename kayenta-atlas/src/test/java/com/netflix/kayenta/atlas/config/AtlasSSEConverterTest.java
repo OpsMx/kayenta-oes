@@ -1,5 +1,8 @@
 package com.netflix.kayenta.atlas.config;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.netflix.kayenta.atlas.model.AtlasResults;
 import com.netflix.kayenta.metrics.FatalQueryException;
@@ -7,7 +10,6 @@ import com.netflix.kayenta.metrics.RetryableQueryException;
 import java.io.BufferedReader;
 import java.io.StringReader;
 import java.util.List;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 public class AtlasSSEConverterTest {
@@ -29,39 +31,28 @@ public class AtlasSSEConverterTest {
   @Test
   public void loneClose() {
     List<AtlasResults> results = atlasResultsFromSSE(closeMessage);
-    Assertions.assertEquals(1, results.size());
+    assertEquals(1, results.size());
   }
 
   @Test
   public void dataPlusClose() {
     List<AtlasResults> results = atlasResultsFromSSE(timeseriesMessage + closeMessage);
-    Assertions.assertEquals(2, results.size());
+    assertEquals(2, results.size());
   }
 
   @Test
   public void missingCloseThrows() {
-    Assertions.assertThrows(
-        RetryableQueryException.class,
-        () -> {
-          atlasResultsFromSSE(timeseriesMessage);
-        });
+    assertThrows(RetryableQueryException.class, () -> atlasResultsFromSSE(timeseriesMessage));
   }
 
   @Test
   public void fatalErrorWithoutClose() {
-    Assertions.assertThrows(
-        FatalQueryException.class,
-        () -> {
-          atlasResultsFromSSE(errorMessageIllegalStateMessage);
-        });
+    assertThrows(
+        FatalQueryException.class, () -> atlasResultsFromSSE(errorMessageIllegalStateMessage));
   }
 
   @Test
   public void retryableErrorWithoutClose() {
-    Assertions.assertThrows(
-        RetryableQueryException.class,
-        () -> {
-          atlasResultsFromSSE(retryableErrorMessage);
-        });
+    assertThrows(RetryableQueryException.class, () -> atlasResultsFromSSE(retryableErrorMessage));
   }
 }

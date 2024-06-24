@@ -10,6 +10,7 @@ dependencies {
     api "org.apache.groovy:groovy-all:+"
 
   testImplementation 'org.scalatest:scalatest_2.12'
+  testRuntimeOnly 'org.scalatestplus:junit-5-9_2.12'
 }
 
 task scalaTest(dependsOn: ['testClasses'], type: JavaExec) {

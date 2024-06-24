@@ -16,10 +16,8 @@
 
 package com.netflix.kayenta.influxdb.config;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertThrows;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.netflix.kayenta.influxdb.model.InfluxDbResult;
@@ -87,7 +85,7 @@ public class InfluxDbResponseConverterTest {
   @Test
   public void serialize() throws Exception {
     List<InfluxDbResult> results = setupAllIntegers();
-    assertThat(influxDbResponseConverter.toBody(results), is(nullValue()));
+    assertThat(influxDbResponseConverter.toBody(results)).isNull();
   }
 
   @Test
@@ -96,7 +94,7 @@ public class InfluxDbResponseConverterTest {
     TypedInput input = new TypedByteArray(MIME_TYPE, EXAMPLE_ALL_INTEGERS.getBytes());
     List<InfluxDbResult> result =
         (List<InfluxDbResult>) influxDbResponseConverter.fromBody(input, List.class);
-    assertThat(result, is(results));
+    assertThat(result).isEqualTo(results);
   }
 
   @Test
@@ -105,7 +103,7 @@ public class InfluxDbResponseConverterTest {
     TypedInput input = new TypedByteArray(MIME_TYPE, EXAMPLE_WITH_FLOATS.getBytes());
     List<InfluxDbResult> result =
         (List<InfluxDbResult>) influxDbResponseConverter.fromBody(input, List.class);
-    assertThat(result, is(results));
+    assertThat(result).isEqualTo(results);
   }
 
   @Test

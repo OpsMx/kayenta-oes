@@ -1,6 +1,7 @@
 package com.netflix.kayenta.atlas;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import com.netflix.kayenta.atlas.model.Backend;
 import java.util.ArrayList;

@@ -1,6 +1,8 @@
 package com.netflix.kayenta.atlas;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -25,8 +27,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @ComponentScan({"com.netflix.kayenta.retrofit.config"})
 class BackendsConfig {}
 
-@ContextConfiguration(classes = {BackendsConfig.class})
 @ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = {BackendsConfig.class})
 public class BackendsTest {
   @Autowired private ResourceLoader resourceLoader;
 
