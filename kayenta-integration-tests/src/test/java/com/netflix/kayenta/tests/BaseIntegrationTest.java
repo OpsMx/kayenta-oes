@@ -29,7 +29,10 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @AutoConfigureObservability
 @ImportAutoConfiguration(PrometheusConfiguration.class)
-@ComponentScan(basePackages = "com.netflix.kayenta.standalonecanaryanalysis")
+@ComponentScan({
+  "com.netflix.kayenta.standalonecanaryanalysis",
+  "com.netflix.kayenta.configuration"
+})
 @SpringBootTest(
     classes = {MetricsReportingConfiguration.class, Main.class},
     webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT,
